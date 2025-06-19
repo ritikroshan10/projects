@@ -1,0 +1,35 @@
+step-1 create a basic form
+imput box and a button
+
+step-2 create a function on submit a form
+
+create a state and then in saveToDoLis function 
+first of all get a input box value form input name and store in a variable
+now for check if same name task added or not when add new task
+if task not exit then add previous task (using spread operator) and new task combine 
+then pass in settodolist function
+now store in local storage
+
+step-3 create a list for store task
+
+step-4 ToDoListItems create a component for list ToDoListItems
+
+step-5 on  todolist apply map and in map function pass ToDoListItems component 
+these output store in list variable and pass in li and  value  value={value}  pass as a props to show a list items in li from todolist 
+
+step-6 foe delete the task
+for delete task we need index , todolist variable, setToDoList function  so all of this pass as a props in 5 step
+<ToDoListItems value={value} key={value} indexNumber={index} todolist={todolist} setToDoList={setToDoList} />
+
+now in ToDoListItems component 
+onclick on cross icon delete task so create a function delete row
+
+in todolist pr filter apply kr ke jis ka index number match kr ke baki index ko return kr dega ---- todolist.filter((v, i) => i != indexNumber)
+fir eis ke result ko setToDoList function me save kra lenge aur eis ko fir local storage me store kr lenge
+
+step-7 for completed task 
+create a state and in css add a class to show or hide result
+now create a function to onclick on li apply this css class
+checkStatus function change the setStatus(!status) 
+
+ step-8 using useeffect help to display the save result in the UI from localstorage

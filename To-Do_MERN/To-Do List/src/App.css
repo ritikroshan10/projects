@@ -1,0 +1,53 @@
+form {
+  width: 1100px;
+  margin: auto;
+  display: flex;
+  gap: 20px;
+}
+
+h1 {
+  text-align: center;
+}
+
+form input {
+  height: 40px;
+  flex-basis: 80%;
+}
+
+form button {
+  flex-basis: 20%;
+}
+
+/*now  button height also 40px because its by default strached*/
+
+.outerdiv {
+  width: 1100px;
+  margin: auto;
+}
+
+.outerdiv ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  margin-top: 40px;
+}
+
+.outerdiv li{
+  padding: 10px;
+  background-color: black;
+  color: white;
+  font-size: 20px;
+  margin-bottom: 20px;
+  position: relative;
+}
+.outerdiv span{
+  position: absolute;
+  right: 20px;
+  cursor: pointer;
+}
+
+.completetodo{
+  text-decoration: line-through;
+  color: red !important;
+  background-color: yellow !important;
+}
