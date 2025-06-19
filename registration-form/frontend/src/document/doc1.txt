@@ -1,0 +1,168 @@
+1.---------------	Setup and Middleware
+const express = require('express'); const mongoose = require('mongoose'); const cors = require('cors');
+
+const app = express(); const PORT = 5000;
+
+app.use(cors());	// Enables Cross-Origin Resource Sharing app.use(express.json());	// Parses incoming JSON request bodies
+
+2.	----------------MongoDB Connection
+mongoose.connect('mongodb://127.0.0.1:27017/registration_form', { useNewUrlParser: true,
+useUnifiedTopology: true,
+})
+.then(() => console.log('MongoDB connected'))
+.catch((err) => console.error('MongoDB connection error:', err));
+
+•	Connects to a local MongoDB database named registration_form.
+•	Logs success or failure.
+
+3.----------------	Mongoose Schema and Model
+const userSchema = new mongoose.Schema({ name: String,
+email: String, age: Number, gender: String, phone: String, address: String
+});
+
+const User = mongoose.model('User', userSchema);
+
+•	Defines a user document structure in MongoDB.
+•	User is a model based on this schema.
+
+4.------------	API Routes
+>	GET All Users
+
+app.get('/users', async (req, res) => { const users = await User.find(); res.json(users);
+});
+
+>	POST New User
+
+app.post('/users', async (req, res) => { const newUser = new User(req.body); await newUser.save(); res.json(newUser);});
+ 
+>	PUT Update User
+
+app.put('/users/:id', async (req, res) => {
+const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body,
+{ new: true }); res.json(updatedUser);
+});
+
+>	DELETE User
+
+app.delete('/users/:id', async (req, res) => { await User.findByIdAndDelete(req.params.id); res.json({ message: 'User deleted' });
+});
+
+5.-------------	Start Server
+app.listen(PORT, () => {
+console.log(`Server running on http://localhost:${PORT}`);
+});
+
+🎨 ------------Frontend - src/App.js
+1.----------	State Management
+const [users, setUsers] = useState([]); const [formData, setFormData] = useState({
+name: '', email: '', age: '', gender: '', phone: '', address: ''
+});
+const [editId, setEditId] = useState(null);
+
+•	users: list of users from backend.
+•	formData: data bound to form inputs.
+•	editId: ID of the user being edited.
+
+2.-----------	Fetching Users on Load
+useEffect(() => { fetchUsers();
+}, []);
+
+•	Triggers fetchUsers once when the component mounts.
+
+3.-----------	Fetch All Users
+const fetchUsers = async () => {
+const res = await axios.get('http://localhost:5000/users'); setUsers(res.data);
+};
+
+•	Makes GET request to backend to retrieve all users.
+ 
+4.-----------	Handle Form Input Change
+const handleChange = (e) => {
+setFormData({ ...formData, [e.target.name]: e.target.value });
+};
+
+•	Updates formData whenever a user types into a field.
+
+5.----------	Handle Form Submit
+const handleSubmit = async (e) => { e.preventDefault();
+
+const { name, email, age, gender, phone, address } = formData;
+if (!name || !email || !age || !gender || !phone || !address) return;
+
+if (editId) {
+await axios.put(`http://localhost:5000/users/${editId}`, formData); setEditId(null);
+} else {
+await axios.post('http://localhost:5000/users', formData);
+}
+
+setFormData({ name: '', email: '', age: '', gender: '', phone: '', address: '' });
+fetchUsers();
+};
+
+•	On Submit:
+o	If editId exists → Update user.
+o	Else → Add new user.
+•	Clears form and reloads user list.
+
+6.-------------	Edit User
+const handleEdit = (user) => { setFormData({ ...user }); setEditId(user._id);
+};
+
+•	Fills the form with selected user’s data and enables Edit mode.
+
+7.-----------	Delete User
+const handleDelete = async (id) => {
+await axios.delete(`http://localhost:5000/users/${id}`); fetchUsers();
+};
+
+•	Removes a user by ID and refreshes the list.
+ 
+8.-----------	Cancel Edit
+const handleCancel = () => { setEditId(null);
+setFormData({ name: '', email: '', age: '', gender: '', phone: '', address: '' });
+};
+
+•	Resets the form and exits edit mode.
+
+9.-----------	UI Rendering
+Form
+
+<form onSubmit={handleSubmit}>
+<input name="name" ... />
+<input name="email" ... />
+...
+<button type="submit">{editId ? 'Update' : 'Submit'}</button>
+{editId && <button type="button" onClick={handleCancel}>Cancel</button>}
+</form>
+
+----Table---
+
+<table>
+<thead>...</thead>
+<tbody>
+{users.map((user) => (
+<tr key={user._id}>
+<td>{user.name}</td>
+...
+<td>
+<button onClick={() => handleEdit(user)}>Edit</button>
+<button onClick={() => handleDelete(user._id)}>Delete</button>
+</td>
+</tr>
+))}
+</tbody>
+</table>
+
+ 
+🗃--------------- MongoDB Structure
+Database: registration_form
+
+Collection: users
+Each document in the users collection looks like:
+
+{
+"_id": "mongodb_generated_id", "name": "John Doe",
+"email": "john@example.com", "age": 30,
+"gender": "Male", "phone": "1234567890",
+"address": "123 Main St"
+}

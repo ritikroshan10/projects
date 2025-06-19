@@ -1,0 +1,151 @@
+MERN User Registration Form - Full Code Documentation
+
+
+Project Overview
+This project is a MERN (MongoDB, Express.js, React.js, Node.js) based User Registration Form. It allows users to create, read, update, and delete (CRUD) user information stored in MongoDB.
+
+Backend - server.js (Detailed Explanation)
+
+1.	const express = require('express');
+-	Imports the Express.js library to create the server.
+
+
+2.	const mongoose = require('mongoose');
+-	Imports Mongoose to connect and interact with MongoDB.
+
+
+3.	const cors = require('cors');
+-	Enables Cross-Origin Resource Sharing (CORS) to allow requests from the React frontend.
+
+
+4.	const app = express();
+-	Initializes an Express application.
+
+
+5.	const PORT = 5000;
+-	Defines the port number where the backend server will run.
+
+
+6.	app.use(cors());
+-	Applies CORS middleware to allow cross-origin requests.
+
+
+7.	app.use(express.json());
+-	Parses incoming JSON data in request bodies.
+
+
+8.	mongoose.connect('mongodb://127.0.0.1:27017/registration_form', {...});
+-	Connects to a local MongoDB instance with database name 'registration_form'.
+
+
+9.	const userSchema = new mongoose.Schema({...});
+-	Defines the structure of documents in the users collection.
+
+
+10.	const User = mongoose.model('User', userSchema);
+-	Creates a Mongoose model to interact with the MongoDB collection.
+ 
+11.	app.get('/users', async (req, res) => {...});
+-	Fetches all user documents from MongoDB.
+
+
+12.	app.post('/users', async (req, res) => {...});
+-	Creates a new user document using data from the frontend.
+
+
+13.	app.put('/users/:id', async (req, res) => {...});
+-	Updates an existing user by their MongoDB document ID.
+
+
+14.	app.delete('/users/:id', async (req, res) => {...});
+-	Deletes a user document by ID.
+
+
+15.	app.listen(PORT, () => {...});
+-	Starts the Express server and listens for incoming requests.
+
+
+
+Frontend - src/App.js (Detailed Explanation)
+
+1.	import { useEffect, useState } from 'react';
+-	Imports React hooks for component state and lifecycle.
+
+
+2.	import axios from 'axios';
+-	Axios is used to make HTTP requests to the backend.
+
+
+3.	import './App.css';
+-	Imports custom CSS styling for the component.
+
+
+4.	const [users, setUsers] = useState([]);
+-	Stores the list of users retrieved from the backend.
+
+
+5.	const [formData, setFormData] = useState({...});
+-	Stores data from the form fields (controlled component).
+
+
+6.	const [editId, setEditId] = useState(null);
+-	Holds the ID of the user being edited (if any).
+
+
+7.	useEffect(() => { fetchUsers(); }, []);
+ 
+-	Calls fetchUsers() once when the component mounts.
+
+
+8.	const fetchUsers = async () => {...};
+-	Sends GET request to load users from backend and update state.
+
+
+9.	const handleChange = (e) => {...};
+-	Updates formData when form inputs change.
+
+
+10.	const handleSubmit = async (e) => {...};
+-	Submits the form: either adds a new user or updates an existing one.
+-	Sends POST request (create) or PUT request (update) depending on editId.
+
+
+11.	const handleEdit = (user) => {...};
+-	Populates the form with existing data for editing.
+
+
+12.	const handleDelete = async (id) => {...};
+-	Sends DELETE request to remove user by ID.
+
+
+13.	const handleCancel = () => {...};
+-	Resets form and exits edit mode.
+
+
+14.	return (...) JSX code
+-	Renders the form UI and user list table.
+-	Shows 'Submit' or 'Update' based on edit mode.
+
+
+
+MongoDB Structure
+
+Database: registration_form Collection: users
+
+Each document has:
+{
+"_id": "MongoDB-generated unique ID", "name": "User name",
+"email": "Email address", "age": 30,
+"gender": "Male/Female/Other",
+ 
+"phone": "1234567890",
+"address": "User address"
+}
+
+
+Summary of Features
+
+-	Create User (POST /users): Adds new user to MongoDB.
+-	Read Users (GET /users): Fetches all users.
+-	Update User (PUT /users/:id): Updates user by ID.
+-	Delete User (DELETE /users/:id): Removes user by ID.
